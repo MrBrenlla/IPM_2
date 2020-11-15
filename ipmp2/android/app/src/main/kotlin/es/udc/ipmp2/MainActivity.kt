@@ -1,4 +1,4 @@
-package ipm.ipm_p2
+package es.udc.ipmp2
 
 import io.flutter.embedding.android.FlutterActivity
 

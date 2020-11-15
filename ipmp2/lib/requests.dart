@@ -95,17 +95,20 @@ class Requests {
 
     // send
     await request.send().then((response) async {
-      // listen for response
-
-      response.stream.transform(utf8.decoder).listen((value) {
-        for (var color in jsonDecode(value)['result']['colors']['background_colors']) {
-          image_colors.add(color['closest_palette_color_html_code'].toString());
-          image_percent.add(color['percent'].toDouble());
-        }
-      });
-
-    }).catchError((e) {
-      print("Error in POST HTTP Call");
+      try {
+        // listen for response
+        response.stream.transform(utf8.decoder).listen((value) {
+          for (var color in jsonDecode(
+              value)['result']['colors']['background_colors']) {
+            image_colors.add(
+                color['closest_palette_color_html_code'].toString());
+            image_percent.add(color['percent'].toDouble());
+          }
+        });
+      } catch (_) {
+        print("Error in POST HTTP Call");
+        rethrow;
+      }
     });
 
     print("IMAGECOLORS::::::::::::::::::::::::::::::::::");

@@ -105,12 +105,25 @@ class _MyHomePageState extends State<MyHomePage> {
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         print('connected');
         //Call secondary window to open
-        Requests().makePostRequest(_image,path).then((colorList) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MySecondaryPage(colors: colorList)),
-          );
-        });
+        try {
+          Requests().makePostRequest(_image, path).then((colorList) {
+            if(colorList[0].length>0) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MySecondaryPage(colors: colorList)),
+              );
+            }else{
+              print('No se detectaron colores');
+              String texto = "No se detectaron colores";
+              String contenido = "Este tipo de errores se producen por servicios de terceros, por favor vuelva a intentarlo. Si el error persiste prueba con otra foto";
+              _showDialog(texto,contenido);
+            }
+          });
+        }catch(e){
+          String texto = "Error inesperado";
+          _showDialog(texto,e.toString());
+        }
       }
     } on SocketException catch (_) { //In case of not get Internet permissions/connection
       print('not connected');

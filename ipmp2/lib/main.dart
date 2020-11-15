@@ -47,8 +47,6 @@ class _MyHomePageState extends State<MyHomePage> {
         if (pickedFile != null) {
           _image = File(pickedFile.path);
           path= pickedFile.path;
-          //Call secondary window
-          getColors();
         } else {
           print('No image selected.');
         }
@@ -78,10 +76,6 @@ class _MyHomePageState extends State<MyHomePage> {
         _image = File(pickedFile.path);
         path= pickedFile.path;
         widgetVisible = true;
-        if (pickedFile != null) {
-          //In case of pic not null, get colors from it.
-          getColors();
-        }
       });
     }
     catch (e)
@@ -105,6 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
   //Open second window
   Future getColors() async
   {
+    if(_image==null) return;
     try { //In case of get Internet permissions/connection
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
@@ -189,6 +184,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: 350,
               ),
               FlatButton(
+                  onPressed: getColors,
+                  child: Visibility(
+                    child:
+                    Text('Scan photo'),
+                    visible: widgetVisible,
+                  )
+              ),
+              FlatButton(
                   onPressed: emptyPhoto,
                   child: Visibility(
                     child:
@@ -196,7 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     visible: widgetVisible,
                   )
               ),
-              SizedBox(   //Use of SizedBox
+                SizedBox(   //Use of SizedBox
                 height: 10,
               ),
               Row(

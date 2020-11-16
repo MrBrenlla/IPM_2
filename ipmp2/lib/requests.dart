@@ -1,23 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
-import 'dart:io';
-import 'package:path/path.dart';
-import 'package:async/async.dart';
-import 'dart:convert';
 import 'package:http/http.dart';
-import 'dart:convert';
-import 'dart:io';
-import 'package:path/path.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:path/path.dart';
-import 'package:async/async.dart';
-import 'dart:io';
-import 'package:http/http.dart' as http;
 
 //Class for Get,Post,...Http calls.
 class Requests {
@@ -66,7 +52,7 @@ class Requests {
     String basicAuth =
         'Basic ' + base64Encode(utf8.encode('$api_key:$api_secret'));
 
-    String url_b = 'https://api.imagga.com/v2/colors';
+    String url_b = 'https://api.imagga.com/v2/colors?deterministic=1';
 
     var stream = new http.ByteStream(DelegatingStream(img.openRead()));
     stream.cast();

@@ -1,15 +1,21 @@
 import 'dart:io';
-
+import "package:provider/provider.dart";
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import "Provider.dart";
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/painting.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 import "requests.dart";
 
-void main() => runApp(MyApp());
 
+void main() {
+  runApp(
+    ChangeNotifierProvider(
+      builder: (context) => Foto(),
+      child: MyApp(),
+    ),
+  );
+}
 //------Main VIEW
 class MyApp extends StatelessWidget {
   @override
@@ -26,14 +32,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  File _image;
   final picker = ImagePicker();
-  String path; //File path - Image
 
-  bool widgetVisible = false; //Bool for turn widget Visible or not
-
-  //Get a photo with phone camera
-  Future getImage() async {
+  Future getImage(Foto f) async {
     var camera_status = await Permission.camera.status;
     print("Camera status: " + camera_status.toString());
 
@@ -43,16 +44,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
       final pickedFile = await picker.getImage(source: ImageSource.camera); //Get file from camera
 
-      setState(() {
-        if (pickedFile != null) {
-          _image = File(pickedFile.path);
-          path= pickedFile.path;
-        } else {
-          print('No image selected.');
-        }
+      if (pickedFile != null) {
+        f.change(File(pickedFile.path), pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
 
-        widgetVisible = true;
-      });
     }
     catch (e){ //In caso of not get camera permissions
       String texto = "No tienes activados los permisos de la cámara.";
@@ -63,41 +60,36 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   //Get a photo from gallery
-  Future getGallery() async {
+  Future getGallery(Foto f) async {
 
     //Pick the photo
-    final pickedFile = await picker.getImage(
-        source: ImageSource.gallery, imageQuality: 50
-    );
-
+   // final pickedFile = await picker.getImage(
+    //    source: ImageSource.gallery, imageQuality: 50
+   // );
+    File fi = await ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 50);
     try
     {
-      setState(() {
-        _image = File(pickedFile.path);
-        path= pickedFile.path;
-        widgetVisible = true;
-      });
+        f.change(fi, fi.path);
     }
-    catch (e)
+    catch (_)
     {
       print("Error in get photo from gallery");
+      String texto = "Foto no seleccionada";
+      String contenido = "Vuelva a intentarlo.";
+      _showDialog(texto,contenido);
     }
 
   }
 
   //Delete actual photo
-  emptyPhoto() {
+  File emptyPhoto() {
     PaintingBinding.instance.imageCache.clear();
     imageCache.clear();
-    setState(() {
-      _image = null;
-      widgetVisible = false;
-      path= null;
-    });
+    return null;
   }
 
   //Open second window
-  Future getColors() async
+  Future getColors(File _image, String path) async
   {
     if(_image==null) return;
     try { //In case of get Internet permissions/connection
@@ -160,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //Build MAIN view
   @override
-  Widget build(BuildContext context) {
+ Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: RichText(
@@ -178,7 +170,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: Center(
-          child:  Column(
+          child: Consumer<Foto>(
+          builder: (context, p, child)  {
+          return  Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -189,27 +183,27 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(   //Use of SizedBox
                 height: 20,
               ),
-              _image == null
+              p.foto == null
                   ? Text('No image selected.')
                   : Image.file(
-                _image,
+                p.foto,
                 width: 300,
                 height: 350,
               ),
               FlatButton(
-                  onPressed: getColors,
+                  onPressed: ()=>getColors(p.foto,p.path),
                   child: Visibility(
                     child:
                     Text('Scan photo'),
-                    visible: widgetVisible,
+                    visible: p.visible,
                   )
               ),
               FlatButton(
-                  onPressed: emptyPhoto,
+                  onPressed:() => p.change(null,null),
                   child: Visibility(
                     child:
                     Text('Remove photo'),
-                    visible: widgetVisible,
+                    visible: p.visible,
                   )
               ),
                 SizedBox(   //Use of SizedBox
@@ -224,7 +218,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: FittedBox(
                       child: FloatingActionButton(
                         child: Icon(Icons.add_a_photo),
-                        onPressed: getImage,
+                        onPressed: () => getImage(p),
                         heroTag: Text("btn1"),
                       ),
                     ),
@@ -239,7 +233,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: FittedBox(
                       child: FloatingActionButton(
                         child: Icon(Icons.photo_album),
-                        onPressed: getGallery,
+                        onPressed: () async {
+                          await getGallery(p);
+                        },
                         heroTag: Text("btn2"),
                       ),
                     ),
@@ -260,7 +256,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: 10,
               ),
             ],
-          )
+          );
+        })
       ),
     );
   }

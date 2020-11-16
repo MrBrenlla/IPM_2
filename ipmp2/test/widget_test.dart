@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:ipm_p2/main.dart';
 
 import 'package:ipmp2/main.dart';
 

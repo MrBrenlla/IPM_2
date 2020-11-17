@@ -83,16 +83,8 @@ class MyHomePageState extends State<MyHomePage> {
 
   }
 
-  //Delete actual photo
-  File emptyPhoto() {
-    PaintingBinding.instance.imageCache.clear();
-    imageCache.clear();
-    return null;
-  }
-
   //Open second window
-  Future getColors(File _image, String path,BuildContext context) async
-  {
+  Future getColors(File _image,BuildContext context) async {
     if(_image==null) return;
     try { //In case of get Internet permissions/connection
       final result = await InternetAddress.lookup('google.com');
@@ -100,7 +92,7 @@ class MyHomePageState extends State<MyHomePage> {
         print('connected');
         //Call secondary window to open
         try {
-          Requests().makePostRequest(_image, path).then((colorList) {
+          Requests().makePostRequest(_image).then((colorList) {
             if(colorList[0].length>0) {
               Navigator.push(
                 context,
@@ -193,7 +185,7 @@ class MyHomePageState extends State<MyHomePage> {
                 height: 350,
               ),
               FlatButton(
-                  onPressed: ()=>getColors(p.foto,p.path,context),
+                  onPressed: ()=>getColors(p.foto,context),
                   child: Visibility(
                     child:
                     Text('Scan photo'),

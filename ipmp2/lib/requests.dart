@@ -7,7 +7,7 @@ import 'package:http/http.dart';
 //Class for Get,Post,...Http calls.
 class Requests {
 
-  String url = 'https://api.imagga.com/v2/colors?image_url=https://imagga.com/static/images/tagging/wind-farm-538576_640.jpg';
+  String url = 'https://api.imagga.com/v2/colors?image_url=https://imagga.com/static/images/tagging/wind-farm-538576_640.jpg&deterministic=1';
   List<String> image_colors = [];
   List<double> image_percent = [];
 
@@ -44,7 +44,7 @@ class Requests {
   }
 
   //HTTP post call
-  Future<List> makePostRequest(File img,String path) async {
+  Future<List> makePostRequest(File img) async {
     //Authentication
     String api_key = 'acc_e5ab7b791d7db70';
     String api_secret = 'd933167f2b26f4926944e9b062abba62';

@@ -1,13 +1,15 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:ipm_p2/main.dart';
+import 'package:permission_handler/permission_handler.dart';
+import "requests.dart";
 
 class Foto extends ChangeNotifier {
 
   File _foto = null;
-  String _path = null;
   bool _visible = false;
 
-  String get path => _path;
 
   File get foto => _foto;
 

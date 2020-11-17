@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
@@ -70,7 +69,7 @@ class Requests {
 
     // multipart that takes file
     var multipartFileSign = new http.MultipartFile('image', stream, length,
-        filename: basename(img.path));
+        filename: img.path.split("/").last);
 
     // add file to multipart
     request.files.add(multipartFileSign);

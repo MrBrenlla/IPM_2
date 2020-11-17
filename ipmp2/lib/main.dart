@@ -28,13 +28,13 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  MyHomePageState createState() => MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePageState extends State<MyHomePage> {
   final picker = ImagePicker();
 
-  Future getImage(Foto f) async {
+  Future getImage(Foto f,BuildContext context) async {
     var camera_status = await Permission.camera.status;
     print("Camera status: " + camera_status.toString());
 
@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
       final pickedFile = await picker.getImage(source: ImageSource.camera); //Get file from camera
 
       if (pickedFile != null) {
-        f.change(File(pickedFile.path), pickedFile.path);
+        f.change(File(pickedFile.path));
       } else {
         print('No image selected.');
       }
@@ -54,29 +54,31 @@ class _MyHomePageState extends State<MyHomePage> {
     catch (e){ //In caso of not get camera permissions
       String texto = "No tienes activados los permisos de la cámara.";
       String contenido = "Por favor, activa tus permisos pulsando 'Aceptar' cuando la ventana de permisos se despliege";
-      _showDialog(texto,contenido);
+      _showDialog(texto,contenido,context);
     }
 
   }
 
   //Get a photo from gallery
-  Future getGallery(Foto f) async {
+  Future getGallery(Foto f,BuildContext context) async {
 
     //Pick the photo
    // final pickedFile = await picker.getImage(
     //    source: ImageSource.gallery, imageQuality: 50
    // );
-    File fi = await ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+    var fi = await ImagePicker().getImage(source: ImageSource.gallery, imageQuality: 50);
+    String path=fi.path;
+    File aux = File(path);
     try
     {
-        f.change(fi, fi.path);
+        f.change(aux);
     }
     catch (_)
     {
       print("Error in get photo from gallery");
       String texto = "Foto no seleccionada";
       String contenido = "Vuelva a intentarlo.";
-      _showDialog(texto,contenido);
+      _showDialog(texto,contenido,context);
     }
 
   }
@@ -89,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   //Open second window
-  Future getColors(File _image, String path) async
+  Future getColors(File _image, String path,BuildContext context) async
   {
     if(_image==null) return;
     try { //In case of get Internet permissions/connection
@@ -109,24 +111,24 @@ class _MyHomePageState extends State<MyHomePage> {
               print('No se detectaron colores');
               String texto = "No se detectaron colores";
               String contenido = "Este tipo de errores se producen por servicios de terceros, por favor vuelva a intentarlo. Si el error persiste prueba con otra foto";
-              _showDialog(texto,contenido);
+              _showDialog(texto,contenido,context);
             }
           });
         }catch(e){
           String texto = "Error inesperado";
-          _showDialog(texto,e.toString());
+          _showDialog(texto,e.toString(),context);
         }
       }
     } on SocketException catch (_) { //In case of not get Internet permissions/connection
       print('not connected');
       String texto = "No tienes activado WIFI/Red.";
       String contenido = "Por favor, activa tu conexión o conéctate a una red";
-      _showDialog(texto,contenido);
+      _showDialog(texto,contenido,context);
     }
   }
 
   //Alert dialog - Use for Errors (Connection,Camera permissions,...)
-  void _showDialog(String texto, String contenido) {
+  void _showDialog(String texto, String contenido, BuildContext context) {
     // flutter defined function
     showDialog(
       context: context,
@@ -191,7 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: 350,
               ),
               FlatButton(
-                  onPressed: ()=>getColors(p.foto,p.path),
+                  onPressed: ()=>getColors(p.foto,p.path,context),
                   child: Visibility(
                     child:
                     Text('Scan photo'),
@@ -199,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   )
               ),
               FlatButton(
-                  onPressed:() => p.change(null,null),
+                  onPressed:() => p.change(null),
                   child: Visibility(
                     child:
                     Text('Remove photo'),
@@ -218,7 +220,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: FittedBox(
                       child: FloatingActionButton(
                         child: Icon(Icons.add_a_photo),
-                        onPressed: () => getImage(p),
+                        onPressed: () => getImage(p,context),
                         heroTag: Text("btn1"),
                       ),
                     ),
@@ -234,7 +236,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: FloatingActionButton(
                         child: Icon(Icons.photo_album),
                         onPressed: () async {
-                          await getGallery(p);
+                          await getGallery(p,context);
                         },
                         heroTag: Text("btn2"),
                       ),

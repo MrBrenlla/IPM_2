@@ -1,6 +1,5 @@
-import "package:provider/provider.dart";
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:file/file.dart';
 
 class Foto extends ChangeNotifier {
 
@@ -14,10 +13,8 @@ class Foto extends ChangeNotifier {
 
   bool get visible => _visible;
 
-
-  void change(File i, String p) {
+  void change(File i) {
     _foto=i;
-    _path=p;
     _visible= (i!=null);
     notifyListeners();
   }

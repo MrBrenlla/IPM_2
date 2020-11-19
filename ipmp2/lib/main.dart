@@ -63,15 +63,15 @@ class MyHomePageState extends State<MyHomePage> {
   Future getGallery(Foto f,BuildContext context) async {
 
     //Pick the photo
-   // final pickedFile = await picker.getImage(
+    // final pickedFile = await picker.getImage(
     //    source: ImageSource.gallery, imageQuality: 50
-   // );
+    // );
     var fi = await ImagePicker().getImage(source: ImageSource.gallery, imageQuality: 50);
     String path=fi.path;
     File aux = File(path);
     try
     {
-        f.change(aux);
+      f.change(aux);
     }
     catch (_)
     {
@@ -143,10 +143,444 @@ class MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Widget portrait_View(BuildContext context){
+    return Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          new Center(
+              child: Consumer<Foto>(
+                  builder: (context, p, child)  {
+                    return  Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(   //Use of SizedBox
+                          height: 5,
+                        ),
+                        Text("Por favor, seleccione una fotografía"),
+                        SizedBox(   //Use of SizedBox
+                          height: 20,
+                        ),
+                        p.foto == null
+                            ? Text('No image selected.')
+                            : Image.file(
+                          p.foto,
+                          width: 300,
+                          height: 330,
+                        ),
+                        FlatButton(
+                            onPressed: ()=>getColors(p.foto,context),
+                            child: Visibility(
+                              child:
+                              Text('Scan photo'),
+                              visible: p.visible,
+                            )
+                        ),
+                        FlatButton(
+                            onPressed:() => p.change(null),
+                            child: Visibility(
+                              child:
+                              Text('Remove photo'),
+                              visible: p.visible,
+                            )
+                        ),
+                        SizedBox(   //Use of SizedBox
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              height: 100.0,
+                              width: 100.0,
+                              child: FittedBox(
+                                child: FloatingActionButton(
+                                  child: Icon(Icons.add_a_photo),
+                                  onPressed: () => getImage(p,context),
+                                  heroTag: Text("btn1"),
+                                ),
+                              ),
+                            ),
+                            SizedBox(   //Use of SizedBox
+                              width: 60,
+                            ),
 
+                            Container(
+                              height: 100.0,
+                              width: 100.0,
+                              child: FittedBox(
+                                child: FloatingActionButton(
+                                  child: Icon(Icons.photo_album),
+                                  onPressed: () async {
+                                    await getGallery(p,context);
+                                  },
+                                  heroTag: Text("btn2"),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Expanded(
+                          child: Align(
+                            alignment: FractionalOffset.bottomCenter,
+                            child:
+                            Text(
+                              'Selecciona una imagen de la galería o toma una foto para extraer los colores',
+                              style: TextStyle(height: 5, fontSize: 10),
+                            ),
+                          ),
+                        ),
+                        SizedBox(   //Use of SizedBox
+                          height: 10,
+                        ),
+                      ],
+                    );
+                  })
+          ),
+        ],
+    );
+  }
+
+  Widget landscape_View(BuildContext context){
+    return Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+        new Center(
+        child: Consumer<Foto>(
+            builder: (context, p, child)  {
+          return  Row(
+                children: <Widget>[
+                      SizedBox(   //Use of SizedBox
+                        width: 15,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: 80.0,
+                            width: 80.0,
+                            child: FittedBox(
+                              child: FloatingActionButton(
+                                child: Icon(Icons.add_a_photo),
+                                onPressed: () => getImage(p,context),
+                                heroTag: Text("btn1"),
+                              ),
+                            ),
+                          ),
+                          SizedBox(   //Use of SizedBox
+                            height: 60,
+                          ),
+
+                          Container(
+                            height: 80.0,
+                            width: 80.0,
+                            child: FittedBox(
+                              child: FloatingActionButton(
+                                child: Icon(Icons.photo_album),
+                                onPressed: () async {
+                                  await getGallery(p,context);
+                                },
+                                heroTag: Text("btn2"),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                  SizedBox(   //Use of SizedBox
+                    width: 20,
+                  ),
+                  FlatButton(
+                        onPressed: ()=>getColors(p.foto,context),
+                        child: Visibility(
+                          child:
+                          Text('Scan photo'),
+                          visible: p.visible,
+                        )
+                    ),
+                    FlatButton(
+                        onPressed:() => p.change(null),
+                        child: Visibility(
+                          child:
+                          Text('Remove photo'),
+                          visible: p.visible,
+                        )
+                    ),
+                  Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("Por favor, seleccione una fotografía"),
+                    SizedBox(   //Use of SizedBox
+                      height: 15,
+                    ),
+                    p.foto == null
+                        ? Text('No image selected.')
+                        : Image.file(
+                      p.foto,
+                      width: 300,
+                      height: 270,
+                    ),
+                    Text(
+                      'Selecciona una imagen de la galería o toma una foto para extraer los colores',
+                      style: TextStyle(height: 3, fontSize: 10),
+                    ),
+                    ],
+                  ),
+
+                ],
+              );
+            }
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget portrait_View_Tablet(BuildContext context){
+    return Stack(
+      fit: StackFit.expand,
+      children: <Widget>[
+        new Center(
+            child: Consumer<Foto>(
+                builder: (context, p, child)  {
+                  return  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                          child: SizedBox(   //Use of SizedBox
+                            height: 5,
+                          ),
+                      ),
+                      Flexible(
+                        flex: 1,
+                          child: RichText(
+                            text: TextSpan(
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text: 'Por favor, seleccione una fotografía', style: TextStyle(color: Colors.black,fontSize: 20)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      SizedBox(   //Use of SizedBox
+                          height: 20,
+                      ),
+                      Flexible(
+                        flex: 5,
+                            child:
+                            p.foto == null
+                              ? Text('No image selected.')
+                              : Image.file(
+                            p.foto,
+                            width: 500,
+                            height: 500,
+                            ),
+                      ),
+
+                      Flexible(
+                        flex: 1,
+                        child:
+                          FlatButton(
+                              onPressed: ()=>getColors(p.foto,context),
+                              child: Visibility(
+                                child:
+                                Text('Scan photo'),
+                                visible: p.visible,
+                              )
+                          ),
+                      ),
+
+                      Flexible(
+                        flex: 1,
+                        child:
+                          FlatButton(
+                              onPressed:() => p.change(null),
+                              child: Visibility(
+                                child:
+                                Text('Remove photo'),
+                                visible: p.visible,
+                              )
+                          ),
+                      ),
+                      SizedBox(   //Use of SizedBox
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            height: 100.0,
+                            width: 100.0,
+                            child: FittedBox(
+                              child: FloatingActionButton(
+                                child: Icon(Icons.add_a_photo),
+                                onPressed: () => getImage(p,context),
+                                heroTag: Text("btn1"),
+                              ),
+                            ),
+                          ),
+                          SizedBox(   //Use of SizedBox
+                            width: 60,
+                          ),
+
+                          Container(
+                            height: 100.0,
+                            width: 100.0,
+                            child: FittedBox(
+                              child: FloatingActionButton(
+                                child: Icon(Icons.photo_album),
+                                onPressed: () async {
+                                  await getGallery(p,context);
+                                },
+                                heroTag: Text("btn2"),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: FractionalOffset.bottomCenter,
+                          child:
+                          Text(
+                            'Selecciona una imagen de la galería o toma una foto para extraer los colores',
+                            style: TextStyle(height: 5, fontSize: 15),
+                          ),
+                        ),
+                      ),
+                      SizedBox(   //Use of SizedBox
+                        height: 10,
+                      ),
+                    ],
+                  );
+                })
+        ),
+      ],
+    );
+  }
+
+  Widget landscape_View_Tablet(BuildContext context)
+  {
+    return Stack(
+      fit: StackFit.expand,
+      children: <Widget>[
+        new Center(
+          child: Consumer<Foto>(
+              builder: (context, p, child)  {
+                return  Row(
+                  children: <Widget>[
+                    SizedBox(   //Use of SizedBox
+                      width: 55,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 120.0,
+                          width: 120.0,
+                          child: FittedBox(
+                            child: FloatingActionButton(
+                              child: Icon(Icons.add_a_photo),
+                              onPressed: () => getImage(p,context),
+                              heroTag: Text("btn1"),
+                            ),
+                          ),
+                        ),
+                        SizedBox(   //Use of SizedBox
+                          height: 60,
+                        ),
+
+                        Container(
+                          height: 120.0,
+                          width: 120.0,
+                          child: FittedBox(
+                            child: FloatingActionButton(
+                              child: Icon(Icons.photo_album),
+                              onPressed: () async {
+                                await getGallery(p,context);
+                              },
+                              heroTag: Text("btn2"),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(   //Use of SizedBox
+                      width: 160,
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child:
+                        FlatButton(
+                            onPressed: ()=>getColors(p.foto,context),
+                            child: Visibility(
+                              child:
+                              Text('Scan photo', style: TextStyle(fontSize: 20.0)),
+                              visible: p.visible,
+                            )
+                        ),
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child:
+                          FlatButton(
+                              onPressed:() => p.change(null),
+                              child: Visibility(
+                                child:
+                                Text('Remove photo', style: TextStyle(fontSize: 20.0)),
+                                visible: p.visible,
+                              )
+                          ),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Flexible(
+                        flex:1,
+                        child:
+                          Text("Por favor, seleccione una fotografía"),
+                        ),
+                        SizedBox(   //Use of SizedBox
+                          height: 15,
+                        ),
+                        Flexible(
+                          flex:5,
+                          child:
+                          p.foto == null
+                              ? Text('No image selected.')
+                              : Image.file(
+                            p.foto,
+                            width: 500,
+                            height: 500,
+                          ),
+                        ),
+                        Flexible(
+                          flex:1,
+                          child:
+                          Text(
+                            'Selecciona una imagen de la galería o toma una foto para extraer los colores',
+                            style: TextStyle(height: 3, fontSize: 17),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              }
+          ),
+        ),
+      ],
+    );
+  }
   //Build MAIN view
   @override
- Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
+    var shortestSide = MediaQuery.of(context).size.shortestSide;
+
     return Scaffold(
       appBar: AppBar(
         title: RichText(
@@ -163,95 +597,24 @@ class MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      body: Center(
-          child: Consumer<Foto>(
-          builder: (context, p, child)  {
-          return  Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(   //Use of SizedBox
-                height: 5,
-              ),
-              Text("Por favor, seleccione una fotografía"),
-              SizedBox(   //Use of SizedBox
-                height: 20,
-              ),
-              p.foto == null
-                  ? Text('No image selected.')
-                  : Image.file(
-                p.foto,
-                width: 300,
-                height: 350,
-              ),
-              FlatButton(
-                  onPressed: ()=>getColors(p.foto,context),
-                  child: Visibility(
-                    child:
-                    Text('Scan photo'),
-                    visible: p.visible,
-                  )
-              ),
-              FlatButton(
-                  onPressed:() => p.change(null),
-                  child: Visibility(
-                    child:
-                    Text('Remove photo'),
-                    visible: p.visible,
-                  )
-              ),
-                SizedBox(   //Use of SizedBox
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    height: 100.0,
-                    width: 100.0,
-                    child: FittedBox(
-                      child: FloatingActionButton(
-                        child: Icon(Icons.add_a_photo),
-                        onPressed: () => getImage(p,context),
-                        heroTag: Text("btn1"),
-                      ),
-                    ),
-                  ),
-                  SizedBox(   //Use of SizedBox
-                    width: 60,
-                  ),
-
-                  Container(
-                    height: 100.0,
-                    width: 100.0,
-                    child: FittedBox(
-                      child: FloatingActionButton(
-                        child: Icon(Icons.photo_album),
-                        onPressed: () async {
-                          await getGallery(p,context);
-                        },
-                        heroTag: Text("btn2"),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: Align(
-                  alignment: FractionalOffset.bottomCenter,
-                  child:
-                  Text(
-                    'Selecciona una imagen de la galería o toma una foto para extraer los colores',
-                    style: TextStyle(height: 5, fontSize: 10),
-                  ),
-                ),
-              ),
-              SizedBox(   //Use of SizedBox
-                height: 10,
-              ),
-            ],
-          );
-        })
+      body:
+      OrientationBuilder(
+        builder: (context, orientation){
+          if(shortestSide < 600) { //Mobile
+              if(orientation == Orientation.portrait){
+                return portrait_View(context);
+              }else{
+                return landscape_View(context);
+              }
+          }
+          else { //Tablet
+            if(orientation == Orientation.portrait){
+              return portrait_View_Tablet(context);
+            }else{
+              return landscape_View_Tablet(context);
+            }
+          }
+        },
       ),
     );
   }
@@ -279,7 +642,7 @@ class SecondRoute extends State<MySecondaryPage> {
   String dropdownValue = 'One';
 
   //Get color values and percentajes
-  get_listView()
+  get_listView(double _fontsize)
   {
     return ListView.builder(
       itemCount: widget.colors[0].length,
@@ -291,7 +654,7 @@ class SecondRoute extends State<MySecondaryPage> {
               children: <TextSpan>[
                 TextSpan(
                     text: widget.colors[0][index] + "-- '%': " + widget.colors[1][index].toStringAsFixed(2),
-                    style: TextStyle(color: OpenPainter(widget.colors)._getColorFromHex(widget.colors[0][index]),fontWeight: FontWeight.normal, fontSize: 15)),
+                    style: TextStyle(color: OpenPainter(widget.colors)._getColorFromHex(widget.colors[0][index]),fontWeight: FontWeight.normal, fontSize: _fontsize)),
               ],
             ),
           ),
@@ -300,9 +663,270 @@ class SecondRoute extends State<MySecondaryPage> {
     );
   }
 
+  Widget portrait_View(BuildContext context)
+  {
+    return Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          new  Center(
+            child:  Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(   //Use of SizedBox
+                  height: 5,
+                ),
+                Container(
+                  width: 337,
+                  height: 85,
+                  child:
+                  RichText(
+                    text: TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: 'Estos son los 3 principales colores presentes en la fotografía:', style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal, fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 400,
+                  height: 220,
+                  child: CustomPaint(
+                    painter: OpenPainter(widget.colors[0]),
+                  ),
+                ),
+                RichText(
+                  text: TextSpan(
+                    children: <TextSpan>[
+                      TextSpan(
+                          text: 'HTML/HEX - COLORS :', style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal, fontSize: 20)),
+                    ],
+                  ),
+                ),
+                SizedBox(   //Use of SizedBox
+                  height: 25,
+                ),
+                Container(
+                    width: 180,
+                    height: 150,
+                    child: get_listView(15)
+                ),
+                //Botón de pruebas
+                Container(
+                  width: 40,
+                  height: 40,
+                ),
+              ],
+            ),
+          ),
+        ],
+    );
+  }
+
+  Widget landscape_View(BuildContext context)
+  {
+    return Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+        new Center(
+            child:
+            Row(
+                children: <Widget>[
+                  Column(
+                      children: <Widget>[
+                        SizedBox(   //Use of SizedBox
+                          height: 15,
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: 'Estos son los 3 principales colores presentes en la fotografía:', style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal, fontSize: 12)),
+                            ],
+                          ),
+                        ),
+                        SizedBox(   //Use of SizedBox
+                          height: 75,
+                        ),
+                        Container(
+                          width: 400,
+                          height: 220,
+                          child: CustomPaint(
+                            painter: OpenPainter(widget.colors[0]),
+                          ),
+                        ),
+                      ],
+                  ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                      RichText(
+                        text: TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: 'HTML/HEX - COLORS :', style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal, fontSize: 20)),
+                          ],
+                        ),
+                      ),
+                      Container(
+                          width: 180,
+                          height: 150,
+                          child: get_listView(15)
+                      ),
+                    ],
+                  ),
+
+                ],
+            ),
+          )
+        ],
+    );
+  }
+
+  Widget portrait_View_Tablet(BuildContext context)
+  {
+    return Stack(
+      fit: StackFit.expand,
+      children: <Widget>[
+        new  Center(
+          child:  Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(   //Use of SizedBox
+                height: 5,
+              ),
+              Container(
+                width: 520,
+                height: 150,
+                child:
+                RichText(
+                  text: TextSpan(
+                    children: <TextSpan>[
+                      TextSpan(
+                          text: 'Estos son los 3 principales colores presentes en la fotografía:', style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal, fontSize: 19)),
+                    ],
+                  ),
+                ),
+              ),
+              Flexible(
+                flex: 2,
+                child: Container(
+                  width: 400,
+                  height: 300,
+                  child: CustomPaint(
+                    painter: OpenPainter(widget.colors[0]),
+                  ),
+                ),
+              ),
+              Container(
+                child:
+                  RichText(
+                    text: TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: 'HTML/HEX - COLORS :', style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal, fontSize: 30)),
+                      ],
+                    ),
+                  ),
+              ),
+              SizedBox(   //Use of SizedBox
+                height: 25,
+              ),
+              Container(
+                  width: 260,
+                  height: 200,
+                  child: get_listView(25)
+              ),
+              //Botón de pruebas
+              Container(
+                width: 40,
+                height: 40,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget landscape_View_Tablet(BuildContext context)
+  {
+    return Stack(
+      fit: StackFit.expand,
+      children: <Widget>[
+        new Center(
+          child:
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  SizedBox(   //Use of SizedBox
+                    height: 45,
+                  ),
+                  Flexible(
+                    flex:2,
+                    child:
+                      RichText(
+                        text: TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: 'Estos son los 3 principales colores presentes en la fotografía:', style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal, fontSize: 24)),
+                          ],
+                        ),
+                      ),
+                  ),
+                  SizedBox(   //Use of SizedBox
+                    height: 155,
+                  ),
+                  Container(
+                    width: 400,
+                    height: 220,
+                    child: CustomPaint(
+                      painter: OpenPainter(widget.colors[0]),
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Flexible(
+                    flex:1,
+                    child: RichText(
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: 'HTML/HEX - COLORS :', style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal, fontSize: 35)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                      width: 330,
+                      height: 250,
+                      child: get_listView(30)
+                  ),
+                ],
+              ),
+
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
   //Build secondary view
   @override
   Widget build(BuildContext context) {
+    var shortestSide = MediaQuery.of(context).size.shortestSide;
+
     return Scaffold(
       appBar: AppBar(
         title: RichText(
@@ -319,57 +943,23 @@ class SecondRoute extends State<MySecondaryPage> {
           ),
         ),
       ),
-      body: Center(
-        child:  Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(   //Use of SizedBox
-              height: 5,
-            ),
-            Container(
-                width: 337,
-                height: 85,
-                child:
-                  RichText(
-                    text: TextSpan(
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: 'Estos son los 3 principales colores presentes en la fotografía:', style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal, fontSize: 12)),
-                      ],
-                    ),
-                  ),
-            ),
-            Container(
-              width: 400,
-              height: 220,
-              child: CustomPaint(
-                painter: OpenPainter(widget.colors[0]),
-              ),
-            ),
-            RichText(
-              text: TextSpan(
-                children: <TextSpan>[
-                  TextSpan(
-                      text: 'HTML/HEX - COLORS :', style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal, fontSize: 20)),
-                ],
-              ),
-            ),
-            SizedBox(   //Use of SizedBox
-              height: 25,
-            ),
-            Container(
-                width: 180,
-                height: 150,
-                child: get_listView()
-            ),
-            //Botón de pruebas
-            Container(
-                width: 40,
-                height: 40,
-            ),
-          ],
-        ),
+      body: OrientationBuilder(
+        builder: (context, orientation){
+          if(shortestSide < 600) { //Mobile
+            if(orientation == Orientation.portrait){
+              return portrait_View(context);
+            }else{
+              return landscape_View(context);
+            }
+          }
+          else { //Tablet
+            if(orientation == Orientation.portrait){
+              return portrait_View_Tablet(context);
+            }else{
+              return landscape_View_Tablet(context);
+            }
+          }
+        },
       ),
     );
   }

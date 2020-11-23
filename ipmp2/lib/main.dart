@@ -86,11 +86,13 @@ class MyHomePageState extends State<MyHomePage> {
     // final pickedFile = await picker.getImage(
     //    source: ImageSource.gallery, imageQuality: 50
     // );
-    var fi = await ImagePicker().getImage(source: ImageSource.gallery, imageQuality: 50);
-    String path=fi.path;
-    File aux = File(path);
+
+
+
     try
     {
+      var fi = await ImagePicker().getImage(source: ImageSource.gallery, imageQuality: 50);
+      File aux = File(fi.path);
       f.change(aux);
     }
     catch (_)

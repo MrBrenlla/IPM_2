@@ -95,7 +95,6 @@ class Requests {
         rethrow;
       }
     });
-
     print("IMAGECOLORS::::::::::::::::::::::::::::::::::");
     print(image_colors);
     print("IMAGEPERCENT::::::::::::::::::::::::::::::::::");

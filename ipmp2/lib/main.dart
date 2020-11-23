@@ -525,12 +525,12 @@ class MyHomePageState extends State<MyHomePage> {
                               ? Text('No image selected.',style: TextStyle(height: 5, fontSize: width*0.025))
                               : Image.file(
                             p.foto,
-                            width: width*0.3,
-                            height: height*0.7,
+                            width: width*0.45,
+                            height: height*0.82,
                           ),
                           Text(
                             'Selecciona una imagen para extraer los colores',
-                            style: TextStyle(height: height*0.01, fontSize: width*0.01),
+                            style: TextStyle(height: height*0.002, fontSize: width*0.01),
                           ),
                         ],
                       ),

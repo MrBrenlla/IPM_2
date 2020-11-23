@@ -13,7 +13,7 @@ var Logo= RichText(
   text: TextSpan(
     children: <TextSpan>[
       TextSpan(
-          text: 'Co', style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold, fontSize: 20)),
+          text: 'Co', style: TextStyle(color: Colors.redAccent,fontWeight: FontWeight.bold, fontSize: 20)),
       TextSpan(
           text: 'Lor', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold, fontSize: 20)),
       TextSpan(
@@ -86,12 +86,19 @@ class MyHomePageState extends State<MyHomePage> {
     // final pickedFile = await picker.getImage(
     //    source: ImageSource.gallery, imageQuality: 50
     // );
-
-
-
+    var fi;
+    try {
+      fi = await ImagePicker().getImage(
+          source: ImageSource.gallery, imageQuality: 50);
+    }catch(PlatformException){
+      print("Error in get photo from gallery");
+      String texto = "Sin permisos para usar la galeria";
+      String contenido = "Habilita los permisos de galeria y vuelva a intentarlo.";
+      _showDialog(texto,contenido,context);
+      return;
+    }
     try
     {
-      var fi = await ImagePicker().getImage(source: ImageSource.gallery, imageQuality: 50);
       File aux = File(fi.path);
       f.change(aux);
     }
@@ -186,7 +193,7 @@ class MyHomePageState extends State<MyHomePage> {
                           SizedBox(   //Use of SizedBox
                             height: height*0.3,
                           ),
-                          Text('No image selected.',style: TextStyle(height: 5, fontSize: height*0.015)),
+                          Text('No image selected.',style: TextStyle(height: 5, fontSize: height*0.015,color:PrimaryColor,)),
                         ]
                     )
                         : Image.file(
@@ -201,7 +208,7 @@ class MyHomePageState extends State<MyHomePage> {
                         onPressed: ()=>getColors(p.foto,context),
                         child: Visibility(
                           child:
-                          Text('Scan photo',style: TextStyle(height: 5, fontSize: height*0.015)),
+                          Text('Scan photo',style: TextStyle(height: 5, fontSize: height*0.015,color:PrimaryColor[800])),
                           visible: p.visible,
                         )
                     ),
@@ -212,7 +219,7 @@ class MyHomePageState extends State<MyHomePage> {
                         onPressed:() => p.change(null),
                         child: Visibility(
                           child:
-                          Text('Remove photo',style: TextStyle(height: 5, fontSize: height*0.015)),
+                          Text('Remove photo',style: TextStyle(height: 5, fontSize: height*0.015,color:PrimaryColor[800])),
                           visible: p.visible,
                         )
                     ),
@@ -263,7 +270,7 @@ class MyHomePageState extends State<MyHomePage> {
                       child:
                       Text(
                         'Selecciona una imagen de la galería o toma una foto para extraer los colores',
-                        style: TextStyle(height: 5, fontSize: width*0.0275),
+                        style: TextStyle(height: 5, fontSize: width*0.0275,color:PrimaryColor[800]),
                       ),
                     ),
                   ),
@@ -300,7 +307,7 @@ class MyHomePageState extends State<MyHomePage> {
                             height: height*0.0,
                           ),
                           p.foto == null
-                              ? Text('No image selected.',style: TextStyle(height: 5, fontSize: width*0.025))
+                              ? Text('No image selected.',style: TextStyle(height: 5, fontSize: width*0.025,color:PrimaryColor[800]))
                               : Image.file(
                             p.foto,
                             width: width*0.3,
@@ -308,7 +315,7 @@ class MyHomePageState extends State<MyHomePage> {
                           ),
                           Text(
                             'Selecciona una imagen para extraer los colores',
-                            style: TextStyle(height: height*0.01, fontSize: width*0.01),
+                            style: TextStyle(height: height*0.01, fontSize: width*0.01,color:PrimaryColor[800]),
                           ),
                         ],
                       ),
@@ -323,7 +330,7 @@ class MyHomePageState extends State<MyHomePage> {
                               onPressed: ()=>getColors(p.foto,context),
                               child: Visibility(
                                 child:
-                                Text('Scan photo',style: TextStyle(height: 5, fontSize: width*0.015)),
+                                Text('Scan photo',style: TextStyle(height: 5, fontSize: width*0.015,color:PrimaryColor[800])),
                                 visible: p.visible,
                               )
                           ),
@@ -331,7 +338,7 @@ class MyHomePageState extends State<MyHomePage> {
                               onPressed:() => p.change(null),
                               child: Visibility(
                                 child:
-                                Text('Remove photo',style: TextStyle(height: 5, fontSize: width*0.015)),
+                                Text('Remove photo',style: TextStyle(height: 5, fontSize: width*0.015,color:PrimaryColor[800])),
                                 visible: p.visible,
                               )
                           ),
@@ -410,7 +417,7 @@ class MyHomePageState extends State<MyHomePage> {
                           SizedBox(   //Use of SizedBox
                             height: height*0.3,
                           ),
-                          Text('No image selected.',style: TextStyle(height: 5, fontSize: height*0.015)),
+                          Text('No image selected.',style: TextStyle(height: 5, fontSize: height*0.015,color:PrimaryColor[800])),
                         ]
                     )
                         : Image.file(
@@ -425,7 +432,7 @@ class MyHomePageState extends State<MyHomePage> {
                         onPressed: ()=>getColors(p.foto,context),
                         child: Visibility(
                           child:
-                          Text('Scan photo',style: TextStyle(height: 5, fontSize: height*0.015)),
+                          Text('Scan photo',style: TextStyle(height: 5, fontSize: height*0.015,color:PrimaryColor[800])),
                           visible: p.visible,
                         )
                     ),
@@ -436,7 +443,7 @@ class MyHomePageState extends State<MyHomePage> {
                         onPressed:() => p.change(null),
                         child: Visibility(
                           child:
-                          Text('Remove photo',style: TextStyle(height: 5, fontSize: height*0.015)),
+                          Text('Remove photo',style: TextStyle(height: 5, fontSize: height*0.015,color:PrimaryColor[800])),
                           visible: p.visible,
                         )
                     ),
@@ -487,7 +494,7 @@ class MyHomePageState extends State<MyHomePage> {
                       child:
                       Text(
                         'Selecciona una imagen de la galería o toma una foto para extraer los colores',
-                        style: TextStyle(height: 5, fontSize: width*0.0275),
+                        style: TextStyle(height: 5, fontSize: width*0.0275,color:PrimaryColor[800]),
                       ),
                     ),
                   ),
@@ -509,36 +516,28 @@ class MyHomePageState extends State<MyHomePage> {
               builder: (context, p, child)  {
                 return  Row(
                   children: <Widget>[
-
-                    SizedBox(   //Use of SizedBox
-                      width:width*0.05,
-                    ),
-
                     Container(
-                      width:width*0.45,
+                      width:width*0.65,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(   //Use of SizedBox
-                            height: height*0.0,
-                          ),
                           p.foto == null
-                              ? Text('No image selected.',style: TextStyle(height: 5, fontSize: width*0.025))
+                              ? Text('No image selected.',style: TextStyle(height: 5, fontSize: width*0.025,color:PrimaryColor[800]))
                               : Image.file(
                             p.foto,
-                            width: width*0.45,
+                            width: width*0.65,
                             height: height*0.82,
                           ),
                           Text(
                             'Selecciona una imagen para extraer los colores',
-                            style: TextStyle(height: height*0.002, fontSize: width*0.01),
+                            style: TextStyle(height: height*0.002, fontSize: width*0.01,color:PrimaryColor[800]),
                           ),
                         ],
                       ),
                     ),
                     Container(
-                      width:width*0.25,
+                      width:width*0.15,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -547,7 +546,7 @@ class MyHomePageState extends State<MyHomePage> {
                               onPressed: ()=>getColors(p.foto,context),
                               child: Visibility(
                                 child:
-                                Text('Scan photo',style: TextStyle(height: 5, fontSize: width*0.015)),
+                                Text('Scan photo',style: TextStyle(height: 5, fontSize: width*0.015,color:PrimaryColor[800])),
                                 visible: p.visible,
                               )
                           ),
@@ -555,7 +554,7 @@ class MyHomePageState extends State<MyHomePage> {
                               onPressed:() => p.change(null),
                               child: Visibility(
                                 child:
-                                Text('Remove photo',style: TextStyle(height: 5, fontSize: width*0.015)),
+                                Text('Remove photo',style: TextStyle(height: 5, fontSize: width*0.015,color:PrimaryColor[800])),
                                 visible: p.visible,
                               )
                           ),
@@ -563,7 +562,7 @@ class MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     Container(
-                      width:width*0.2,
+                      width:width*0.15,
                       alignment:Alignment.centerRight,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -751,7 +750,7 @@ class SecondRoute extends State<MySecondaryPage> {
                     text: TextSpan(
                       children: <TextSpan>[
                         TextSpan(
-                            text: '3 principales colores de la fotografía:', style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal, fontSize: height*0.025)),
+                            text: '3 principales colores de la fotografía:', style: TextStyle(fontWeight: FontWeight.normal, fontSize: height*0.025,color:PrimaryColor[800])),
                       ],
                     ),
                   ),
@@ -770,7 +769,7 @@ class SecondRoute extends State<MySecondaryPage> {
                   text: TextSpan(
                     children: <TextSpan>[
                       TextSpan(
-                          text: 'HTML/HEX - COLORS :', style: TextStyle(color: Colors.grey[700],fontWeight: FontWeight.normal, fontSize: height*0.03)),
+                          text: 'HTML/HEX - COLORS :', style: TextStyle(color:PrimaryColor[800],fontWeight: FontWeight.normal, fontSize: height*0.03)),
                     ],
                   ),
                 ),
@@ -806,7 +805,7 @@ class SecondRoute extends State<MySecondaryPage> {
               text: TextSpan(
                 children: <TextSpan>[
                   TextSpan(
-                      text: '3 principales colores de la fotografía:', style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal, fontSize: width*0.04)),
+                      text: '3 principales colores de la fotografía:', style: TextStyle(color:PrimaryColor[800],fontWeight: FontWeight.normal, fontSize: width*0.04)),
                  ],
                 ),
               ),
@@ -842,7 +841,7 @@ class SecondRoute extends State<MySecondaryPage> {
                         text: TextSpan(
                           children: <TextSpan>[
                             TextSpan(
-                                text: 'HTML/HEX - COLORS :', style: TextStyle(color: Colors.grey[700],fontWeight: FontWeight.normal, fontSize: height*0.025)),
+                                text: 'HTML/HEX - COLORS :', style: TextStyle(color:PrimaryColor[800],fontWeight: FontWeight.normal, fontSize: width*0.025)),
                           ],
                         ),
                       ),

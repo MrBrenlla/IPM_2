@@ -7,27 +7,33 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/painting.dart';
 import 'package:permission_handler/permission_handler.dart';
 import "requests.dart";
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 
-const PrimaryColor = Colors.blue;
-var Logo= RichText(
+const PrimaryColor = Colors.red;
+final Logo= RichText(
   text: TextSpan(
     children: <TextSpan>[
       TextSpan(
-          text: 'Co', style: TextStyle(color: Colors.redAccent,fontWeight: FontWeight.bold, fontSize: 20)),
+          text: 'Co', style: TextStyle(color: Colors.pink[700],fontWeight: FontWeight.bold, fontSize: 20)),
       TextSpan(
-          text: 'Lor', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold, fontSize: 20)),
+          text: 'Lor', style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold, fontSize: 20)),
       TextSpan(
           text: ' APP',
-          style: TextStyle(color: Colors.lightGreenAccent, fontSize: 20)),
+          style: TextStyle(color: Colors.blueAccent[700], fontSize: 20)),
     ],
   ),
 );
+
+final audioPlayer = new AudioPlayer();
+final audioCache = new AudioCache(fixedPlayer: audioPlayer);
 
 void main() {
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, //or set color with: Color(0xFF0000FF)
   ));
+
   runApp(
     ChangeNotifierProvider(
       builder: (context) => Foto(),
@@ -35,6 +41,7 @@ void main() {
     ),
   );
 }
+
 //------Main VIEW
 class MyApp extends StatelessWidget {
   @override
@@ -113,21 +120,26 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   //Open second window
-  Future getColors(File _image,BuildContext context) async {
-    if(_image==null) return;
+  Future getColors(Foto f,BuildContext context) async{
+    if(f.foto==null) return;
+    audioCache.play("Scan.wav");
+    f.scan(true);
     try { //In case of get Internet permissions/connection
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         print('connected');
         //Call secondary window to open
         try {
-          Requests().makePostRequest(_image).then((colorList) {
+          Requests().makePostRequest(f.foto).then((colorList) {
+            f.scan(false);
+            audioPlayer.stop();
             if(colorList[0].length>0) {
+              audioCache.play("Scan_end.wav");
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => MySecondaryPage(colors: colorList)),
-              );
+                  builder: (context) => MySecondaryPage(colors: colorList),
+            ));
             }else{
               print('No se detectaron colores');
               String texto = "No se detectaron colores";
@@ -136,16 +148,43 @@ class MyHomePageState extends State<MyHomePage> {
             }
           });
         }catch(e){
+          f.scan(false);
+          audioPlayer.stop();
           String texto = "Error inesperado";
           _showDialog(texto,e.toString(),context);
         }
       }
     } on SocketException catch (_) { //In case of not get Internet permissions/connection
+      audioPlayer.stop();
+      f.scan(false);
       print('not connected');
       String texto = "No tienes activado WIFI/Red.";
       String contenido = "Por favor, activa tu conexión o conéctate a una red";
       _showDialog(texto,contenido,context);
     }
+  }
+
+  borrar(Foto f){
+    if(f.foto!=null){
+      audioCache.play("Eliminar_foto.wav");
+      f.change(null);
+    }
+  }
+
+  Widget loading_mobile(Foto f, double width,BuildContext context){
+    if(f.scaning) {
+      print("chega");
+      return Image.asset("camara.gif");
+    }
+    else{     print("pasa");
+      return FlatButton(
+          onPressed: ()=>getColors(f,context),
+          child: Visibility(
+            child:
+            Text('Scan photo',style: TextStyle(height: 5, fontSize: width*0.015,color:PrimaryColor[800])),
+            visible: f.visible,
+          )
+      );}
   }
 
   //Alert dialog - Use for Errors (Connection,Camera permissions,...)
@@ -154,6 +193,8 @@ class MyHomePageState extends State<MyHomePage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+
+        audioCache.play("Dialogo.wav");
 
         return AlertDialog(
           backgroundColor: PrimaryColor[50],
@@ -205,7 +246,7 @@ class MyHomePageState extends State<MyHomePage> {
                   Container(
                     height:height*0.06,
                     child: FlatButton(
-                        onPressed: ()=>getColors(p.foto,context),
+                        onPressed: ()=>getColors(p,context),
                         child: Visibility(
                           child:
                           Text('Scan photo',style: TextStyle(height: 5, fontSize: height*0.015,color:PrimaryColor[800])),
@@ -216,7 +257,7 @@ class MyHomePageState extends State<MyHomePage> {
                   Container(
                     height:height*0.06,
                     child: FlatButton(
-                        onPressed:() => p.change(null),
+                        onPressed:() => borrar(p),
                         child: Visibility(
                           child:
                           Text('Remove photo',style: TextStyle(height: 5, fontSize: height*0.015,color:PrimaryColor[800])),
@@ -326,16 +367,13 @@ class MyHomePageState extends State<MyHomePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          FlatButton(
-                              onPressed: ()=>getColors(p.foto,context),
-                              child: Visibility(
-                                child:
-                                Text('Scan photo',style: TextStyle(height: 5, fontSize: width*0.015,color:PrimaryColor[800])),
-                                visible: p.visible,
-                              )
+                          Container(
+                            width: width*0.25,
+                            height: height*0.35,
+                            child: loading_mobile(p,width,context),
                           ),
                           FlatButton(
-                              onPressed:() => p.change(null),
+                              onPressed:() => borrar(p),
                               child: Visibility(
                                 child:
                                 Text('Remove photo',style: TextStyle(height: 5, fontSize: width*0.015,color:PrimaryColor[800])),
@@ -429,7 +467,7 @@ class MyHomePageState extends State<MyHomePage> {
                   Container(
                     height:height*0.06,
                     child: FlatButton(
-                        onPressed: ()=>getColors(p.foto,context),
+                        onPressed: ()=>getColors(p,context),
                         child: Visibility(
                           child:
                           Text('Scan photo',style: TextStyle(height: 5, fontSize: height*0.015,color:PrimaryColor[800])),
@@ -440,7 +478,7 @@ class MyHomePageState extends State<MyHomePage> {
                   Container(
                     height:height*0.06,
                     child: FlatButton(
-                        onPressed:() => p.change(null),
+                        onPressed:() => borrar(p),
                         child: Visibility(
                           child:
                           Text('Remove photo',style: TextStyle(height: 5, fontSize: height*0.015,color:PrimaryColor[800])),
@@ -543,7 +581,7 @@ class MyHomePageState extends State<MyHomePage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           FlatButton(
-                              onPressed: ()=>getColors(p.foto,context),
+                              onPressed: ()=>getColors(p,context),
                               child: Visibility(
                                 child:
                                 Text('Scan photo',style: TextStyle(height: 5, fontSize: width*0.015,color:PrimaryColor[800])),
@@ -551,7 +589,7 @@ class MyHomePageState extends State<MyHomePage> {
                               )
                           ),
                           FlatButton(
-                              onPressed:() => p.change(null),
+                              onPressed:() => borrar(p),
                               child: Visibility(
                                 child:
                                 Text('Remove photo',style: TextStyle(height: 5, fontSize: width*0.015,color:PrimaryColor[800])),
@@ -620,6 +658,7 @@ class MyHomePageState extends State<MyHomePage> {
     double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
+
       backgroundColor: PrimaryColor[50],
       appBar: AppBar(
         toolbarHeight: height*0.075,
@@ -667,8 +706,10 @@ class MySecondaryPage extends StatefulWidget {
 }
 
 //Secondary Window
-class SecondRoute extends State<MySecondaryPage> {
+class SecondRoute extends State<MySecondaryPage> with SingleTickerProviderStateMixin {
   String dropdownValue = 'One';
+  Animation<double> animation;
+  AnimationController controller;
 
   double calRadius(double w, double h){
     if(w>h) return h*0.07;
@@ -860,7 +901,6 @@ class SecondRoute extends State<MySecondaryPage> {
   }
 
   //Build secondary view
-  @override
   Widget build(BuildContext context) {
     var shortestSide = MediaQuery.of(context).size.shortestSide;
 
@@ -923,3 +963,5 @@ class OpenPainter extends CustomPainter {
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
+
+

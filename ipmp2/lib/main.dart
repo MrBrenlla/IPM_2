@@ -28,7 +28,7 @@ final Logo= RichText(
 final audioPlayer = new AudioPlayer();
 final audioCache = new AudioCache(fixedPlayer: audioPlayer);
 
-void main() {
+Future<void> main() {
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, //or set color with: Color(0xFF0000FF)
@@ -40,9 +40,8 @@ void main() {
       child: MyApp(),
     ),
   );
+
 }
-
-
 
 
 
@@ -229,8 +228,11 @@ class MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
+                  SizedBox(   //Use of SizedBox
+                    height: height*0.01,
+                  ),
                   Container(
-                    height: height*0.5,
+                    height: height*0.45,
                     child: p.foto == null
                         ? Column(
                         children:[
@@ -243,8 +245,11 @@ class MyHomePageState extends State<MyHomePage> {
                         : Image.file(
                       p.foto,
                       width: width*0.85,
-                      height: height*0.5,
+                      height: height*0.45,
                     ),
+                  ),
+                  SizedBox(   //Use of SizedBox
+                    height: height*0.01,
                   ),
                   Container(
                     height:height*0.1,
@@ -302,16 +307,6 @@ class MyHomePageState extends State<MyHomePage> {
                       ],
                     ),
                   ),
-                  Expanded(
-                    child: Align(
-                      alignment: FractionalOffset.bottomCenter,
-                      child:
-                      Text(
-                        'Selecciona una imagen de la galería o toma una foto para extraer los colores',
-                        style: TextStyle(height: 5, fontSize: width*0.0275,color:PrimaryColor[800]),
-                      ),
-                    ),
-                  ),
                 ],
               );
             }),
@@ -337,9 +332,6 @@ class MyHomePageState extends State<MyHomePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(   //Use of SizedBox
-                            height: height*0.0,
-                          ),
                           p.foto == null
                               ? Text('No image selected.',style: TextStyle(height: 5, fontSize: width*0.025,color:PrimaryColor[800]))
                               : Image.file(
@@ -453,8 +445,11 @@ class MyHomePageState extends State<MyHomePage> {
                     )
                         : Image.file(
                       p.foto,
-                      width: width*0.9,
+                      height: height*0.6,
                     ),
+                  ),
+                  SizedBox(   //Use of SizedBox
+                    height: height*0.01,
                   ),
                   Container(
                     height:height*0.1,
@@ -472,14 +467,14 @@ class MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   Container(
-                    height:height*0.2,
+                    height:height*0.15,
                     alignment:Alignment.bottomCenter,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
-                          height: height*0.2,
-                          width: width*0.2,
+                          height: height*0.15,
+                          width: width*0.15,
                           child: FittedBox(
                             child: FloatingActionButton(
                               backgroundColor: PrimaryColor[400],
@@ -494,8 +489,8 @@ class MyHomePageState extends State<MyHomePage> {
                         ),
 
                         Container(
-                          height: height*0.2,
-                          width: width*0.2,
+                          height: height*0.15,
+                          width: width*0.15,
                           child: FittedBox(
                             child: FloatingActionButton(
 
@@ -541,6 +536,7 @@ class MyHomePageState extends State<MyHomePage> {
                             p.foto,
                             width: width*0.65,
                             height: height*0.82,
+
                           ),
                           Text(
                             'Selecciona una imagen para extraer los colores',
@@ -612,7 +608,7 @@ class MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     SizedBox(   //Use of SizedBox
-                      width: width*0.05,
+                      width: width*0.03,
                     ),
                   ],
                 );

@@ -42,6 +42,10 @@ void main() {
   );
 }
 
+
+
+
+
 //------Main VIEW
 class MyApp extends StatelessWidget {
   @override
@@ -122,6 +126,8 @@ class MyHomePageState extends State<MyHomePage> {
   //Open second window
   Future getColors(Foto f,BuildContext context) async{
     if(f.foto==null) return;
+    final audioPlayer = new AudioPlayer();
+    final audioCache = new AudioCache(fixedPlayer: audioPlayer);
     audioCache.play("Scan.wav");
     f.scan(true);
     try { //In case of get Internet permissions/connection
@@ -171,20 +177,17 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Widget loading_mobile(Foto f, double width,BuildContext context){
-    if(f.scaning) {
-      print("chega");
-      return Image.asset("camara.gif");
-    }
-    else{     print("pasa");
-      return FlatButton(
-          onPressed: ()=>getColors(f,context),
-          child: Visibility(
-            child:
-            Text('Scan photo',style: TextStyle(height: 5, fontSize: width*0.015,color:PrimaryColor[800])),
-            visible: f.visible,
-          )
-      );}
+
+  Widget loading(Foto f, double size,BuildContext context){
+    if(f.scaning) return Image.asset("camara.gif");
+    else return FlatButton(
+        onPressed: ()=>getColors(f,context),
+        child: Visibility(
+          child:
+          Text('Scan photo',style: TextStyle(height: 5, fontSize: size*0.015,color:PrimaryColor[800])),
+          visible: f.visible,
+        )
+    );
   }
 
   //Alert dialog - Use for Errors (Connection,Camera permissions,...)
@@ -244,15 +247,9 @@ class MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   Container(
-                    height:height*0.06,
-                    child: FlatButton(
-                        onPressed: ()=>getColors(p,context),
-                        child: Visibility(
-                          child:
-                          Text('Scan photo',style: TextStyle(height: 5, fontSize: height*0.015,color:PrimaryColor[800])),
-                          visible: p.visible,
-                        )
-                    ),
+                    height:height*0.1,
+                    alignment:Alignment.bottomCenter,
+                    child: loading(p,height,context),
                   ),
                   Container(
                     height:height*0.06,
@@ -326,7 +323,7 @@ class MyHomePageState extends State<MyHomePage> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Stack(
-      fit: StackFit.expand,
+      //fit: StackFit.expand,
       children: <Widget>[
         new Center(
           child: Consumer<Foto>(
@@ -334,12 +331,8 @@ class MyHomePageState extends State<MyHomePage> {
                 return  Row(
                   children: <Widget>[
 
-                    SizedBox(   //Use of SizedBox
-                      width:width*0.05,
-                    ),
-
                     Container(
-                      width:width*0.45,
+                      width:width*0.55,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -356,21 +349,21 @@ class MyHomePageState extends State<MyHomePage> {
                           ),
                           Text(
                             'Selecciona una imagen para extraer los colores',
-                            style: TextStyle(height: height*0.01, fontSize: width*0.01,color:PrimaryColor[800]),
+                            style: TextStyle(height: height*0.01, fontSize: width*0.0125,color:PrimaryColor[800]),
                           ),
                         ],
                       ),
                     ),
                     Container(
-                      width:width*0.25,
+                      width:width*0.2,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            width: width*0.25,
+                            width: width*0.2,
                             height: height*0.35,
-                            child: loading_mobile(p,width,context),
+                            child: loading(p,width,context),
                           ),
                           FlatButton(
                               onPressed:() => borrar(p),
@@ -403,7 +396,7 @@ class MyHomePageState extends State<MyHomePage> {
                             ),
                           ),
                           SizedBox(   //Use of SizedBox
-                            height: height*0.1,
+                            height: height*0.05,
                           ),
 
                           Container(
@@ -448,7 +441,7 @@ class MyHomePageState extends State<MyHomePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Container(
-                    height: height*0.5,
+                    height: height*0.55,
                     child: p.foto == null
                         ? Column(
                         children:[
@@ -460,20 +453,12 @@ class MyHomePageState extends State<MyHomePage> {
                     )
                         : Image.file(
                       p.foto,
-                      width: width*0.85,
-                      height: height*0.5,
+                      width: width*0.9,
                     ),
                   ),
                   Container(
-                    height:height*0.06,
-                    child: FlatButton(
-                        onPressed: ()=>getColors(p,context),
-                        child: Visibility(
-                          child:
-                          Text('Scan photo',style: TextStyle(height: 5, fontSize: height*0.015,color:PrimaryColor[800])),
-                          visible: p.visible,
-                        )
-                    ),
+                    height:height*0.1,
+                    child: loading(p, height, context),
                   ),
                   Container(
                     height:height*0.06,
@@ -526,16 +511,6 @@ class MyHomePageState extends State<MyHomePage> {
                       ],
                     ),
                   ),
-                  Expanded(
-                    child: Align(
-                      alignment: FractionalOffset.bottomCenter,
-                      child:
-                      Text(
-                        'Selecciona una imagen de la galería o toma una foto para extraer los colores',
-                        style: TextStyle(height: 5, fontSize: width*0.0275,color:PrimaryColor[800]),
-                      ),
-                    ),
-                  ),
                 ],
               );
             }),
@@ -580,13 +555,10 @@ class MyHomePageState extends State<MyHomePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          FlatButton(
-                              onPressed: ()=>getColors(p,context),
-                              child: Visibility(
-                                child:
-                                Text('Scan photo',style: TextStyle(height: 5, fontSize: width*0.015,color:PrimaryColor[800])),
-                                visible: p.visible,
-                              )
+                          Container(
+                            width:width*0.15,
+                            height: height*0.15,
+                            child: loading(p, width, context),
                           ),
                           FlatButton(
                               onPressed:() => borrar(p),
